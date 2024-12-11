@@ -4,11 +4,12 @@ import { Todo } from './types/Todo';
 
 interface TodoListProps {
   todos: Todo[];
+  tempTodo: Todo | null;
   filter: FilterType;
   onDelete: (todoId: number) => void;
 }
 
-export const TodoList: React.FC<TodoListProps> = ({ todos, filter, onDelete }) => {
+export const TodoList: React.FC<TodoListProps> = ({ todos, tempTodo, filter, onDelete }) => {
 
   const filteredTodos = todos.filter(todo => {
     if (filter === 'active') return !todo.completed;
@@ -16,10 +17,15 @@ export const TodoList: React.FC<TodoListProps> = ({ todos, filter, onDelete }) =
     return true;
   });
 
+  const todosToRender = tempTodo
+    ? [tempTodo, ...filteredTodos]
+    : filteredTodos;
+
+
   return (
     <section className="todoapp__main" data-cy="TodoList">
-      {filteredTodos.map(todo => (
-        <TodoItem key={todo.id} todo={todo} onDelete={onDelete} />
+      {todosToRender.map(todo => (
+        <TodoItem key={todo.id || 'temp'} todo={todo} onDelete={onDelete} />
       ))}
     </section>
   );

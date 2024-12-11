@@ -13,11 +13,13 @@ import { Todo } from '../src/types/Todo';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [tempTodo, setTempTodo] = useState<Todo | null>(null);
+
   const [error, setError] = useState<string | null>(null);
   const [isErrorVisible, setIsErrorVisible] = useState(true);
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [isAdding, setIsAdding] = useState(false);
-  const [tempTodo, setTempTodo] = useState<Todo | null>(null);
+
 
   const handleError = (errorType: string) => {
     switch (errorType) {
@@ -122,15 +124,6 @@ export const App: React.FC = () => {
     loadTodos();
   }, []);
 
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => {
-        setError(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
-
   if (!USER_ID) {
     return <UserWarning />;
   }
@@ -140,8 +133,8 @@ export const App: React.FC = () => {
       <h1 className="todoapp__title">todos</h1>
 
       <div className="todoapp__content">
-        <Header onAdd={(title) => addTodo({ title, userId: USER_ID, completed: false })} />
-        <TodoList todos={todos} setTodos={setTodos} filter={filter} onDelete={deleteTodo}/>
+        <Header onAdd={(title) => addTodo({ title, userId: USER_ID, completed: false })} isAdding={isAdding} />
+        <TodoList todos={todos} tempTodo={tempTodo} setTodos={setTodos} filter={filter} onDelete={deleteTodo}/>
         {todos.length > 0 && (
           <Footer todos={todos} filter={filter} setFilter={setFilter} clearCompletedTodos={clearCompletedTodos}/>
         )}

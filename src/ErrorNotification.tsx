@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 
 interface Props {
@@ -6,8 +6,15 @@ interface Props {
   onClose: () => void;
 }
 
-export const ErrorNotification: React.FC<Props> = ({ error, onClose }) => (
-  <div
+export const ErrorNotification: React.FC<Props> = ({ error, onClose }) => {
+
+  useEffect(() => {
+    setTimeout(() => onClose(''), 3000);
+  });
+
+
+  return (
+    <div
     data-cy="ErrorNotification"
     className={classNames(
       'notification is-danger is-light has-text-weight-normal',
@@ -17,4 +24,5 @@ export const ErrorNotification: React.FC<Props> = ({ error, onClose }) => (
     <button data-cy="HideErrorButton" type="button" className="delete" onClick={onClose}/>
     {error}
   </div>
-);
+  )
+};
