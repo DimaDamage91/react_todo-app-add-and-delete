@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect } from 'react';
-import { UserWarning } from './UserWarning';
-import { USER_ID } from './api/todos';
-import { ErrorNotification } from './ErrorNotification';
-import { Header } from './Header';
-import { TodoList } from './TodoList';
-import { Footer } from './Footer';
+import { UserWarning } from '../UserWarning';
+import { USER_ID } from '../api/todos';
+import { ErrorNotification } from '../components/ErrorNotification';
+import { Header } from '../components/Header';
+import { TodoList } from '../components/TodoList';
+import { Footer } from '../components/Footer';
 
-import * as todoService from '../src/api/todos';
-import { Todo } from '../src/types/Todo';
+import * as todoService from '../api/todos';
+import { Todo } from '../types/Todo';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -41,7 +41,7 @@ export const App: React.FC = () => {
     setIsErrorVisible(true);
   };
 
-  function deleteTodo(todoId: number) {
+  const deleteTodo = (todoId: number) => {
     setTodos((currentTodos) =>
       currentTodos.map((todo) =>
         todo.id === todoId ? { ...todo, isLoading: true } : todo
@@ -65,7 +65,7 @@ export const App: React.FC = () => {
       });
   }
 
-  function addTodo({ title, userId, completed }: Todo) {
+  const addTodo = ({ title, userId, completed }: Todo) => {
     if (!title.trim()) {
       setError('Title should not be empty');
       setIsErrorVisible(true);
@@ -96,7 +96,7 @@ export const App: React.FC = () => {
       });
   }
 
-  function clearCompletedTodos() {
+  const clearCompletedTodos = () => {
     const completedTodos = todos.filter((todo) => todo.completed);
 
     Promise.allSettled(

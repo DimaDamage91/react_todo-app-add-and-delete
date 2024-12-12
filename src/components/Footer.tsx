@@ -1,5 +1,8 @@
 import React from 'react';
-import { Todo } from './types/Todo';
+import { Todo } from '../types/Todo';
+import { FilterTypes } from '../constants/FilterTypes';
+import { FilterType } from '../types/FilterType';
+import classNames from 'classnames';
 
 interface FooterProps {
   todos: Todo[];
@@ -17,35 +20,22 @@ export const Footer: React.FC<FooterProps> = ({ todos, filter, setFilter, clearC
         {activeTodosCount} items left
       </span>
       <nav className="filter" data-cy="Filter">
-        <a
-          href="#/"
-          className={filter === 'all' ? 'selected' : ''}
-          onClick={() => setFilter('all')}
-          data-cy="FilterLinkAll"
-        >
-          All
-        </a>
-        <a
-          href="#/active"
-          className={filter === 'active' ? 'selected' : ''}
-          onClick={() => setFilter('active')}
-          data-cy="FilterLinkActive"
-        >
-          Active
-        </a>
-        <a
-          href="#/completed"
-          className={filter === 'completed' ? 'selected' : ''}
-          onClick={() => setFilter('completed')}
-          data-cy="FilterLinkCompleted"
-        >
-          Completed
-        </a>
+        {Object.values(FilterTypes).map(filterType => (
+          <a
+            key={filterType}
+            href={`#/${filterType}`}
+            className={classNames({ selected: filter === filterType })}
+            onClick={() => setFilter(filterType)}
+            data-cy={`FilterLink${filterType.charAt(0).toUpperCase() + filterType.slice(1)}`}
+          >
+            {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
+          </a>
+        ))}
       </nav>
       <button
         data-cy="ClearCompletedButton"
         type="button"
-        className="todoapp__clear-completed"
+        className={classNames("todoapp__clear-completed", { disabled: todos.every(todo => !todo.completed) })}
         onClick={clearCompletedTodos}
         disabled={todos.every((todo) => !todo.completed)}
       >

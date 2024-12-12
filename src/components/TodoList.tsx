@@ -1,6 +1,7 @@
 import React from 'react';
-import { TodoItem } from './TodoItem';
-import { Todo } from './types/Todo';
+import { TodoItem } from '../components/TodoItem';
+import { Todo } from '../types/Todo';
+import { FilterType } from '../types/FilterType';
 
 interface TodoListProps {
   todos: Todo[];
@@ -18,14 +19,13 @@ export const TodoList: React.FC<TodoListProps> = ({ todos, tempTodo, filter, onD
   });
 
   const todosToRender = tempTodo
-    ? [tempTodo, ...filteredTodos]
-    : filteredTodos;
-
+  ? [tempTodo, ...filteredTodos]
+  : filteredTodos;
 
   return (
     <section className="todoapp__main" data-cy="TodoList">
       {todosToRender.map(todo => (
-        <TodoItem key={todo.id || 'temp'} todo={todo} onDelete={onDelete} />
+        <TodoItem key={todo.id ? todo.id : 'temp'} todo={todo} onDelete={onDelete} />
       ))}
     </section>
   );

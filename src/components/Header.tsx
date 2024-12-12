@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useState } from 'react';
 
 export const Header: React.FC<{ onAdd: (title: string) => void; isAdding: boolean; }> = ({ onAdd, isAdding }) => {
@@ -17,7 +18,9 @@ export const Header: React.FC<{ onAdd: (title: string) => void; isAdding: boolea
           data-cy="NewTodoField"
           ref={inputRef}
           type="text"
-          className="todoapp__new-todo"
+          className={classNames('todoapp__new-todo', {
+            'todoapp__new-todo--disabled' : isAdding,
+          })}
           placeholder="What needs to be done?"
           value={newTodoTitle}
           onChange={(e) => setNewTodoTitle(e.target.value)}

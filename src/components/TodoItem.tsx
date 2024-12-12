@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Todo } from './types/Todo';
+import { Todo } from '../types/Todo';
 
 interface TodoItemProps {
   todo: Todo;
@@ -8,6 +8,7 @@ interface TodoItemProps {
 }
 
 export const TodoItem: React.FC<TodoItemProps> = ({ todo, onDelete }) => {
+  const isTemporary = todo.id === 0;
 
   return (
     <div data-cy="Todo" key={todo.id} className={classNames('todo', { completed: todo.completed })}>
@@ -26,7 +27,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onDelete }) => {
       </span>
 
       {/* Remove button appears only on hover */}
-      <button type="button" className="todo__remove" data-cy="TodoDelete" onClick={() => onDelete(todo.id)} >
+      <button type="button" className="todo__remove" data-cy="TodoDelete" onClick={() => onDelete(todo.id)} disabled={isTemporary}>
         ×
       </button>
 
