@@ -6,6 +6,7 @@ import { FilterType } from '../types/FilterType';
 interface TodoListProps {
   todos: Todo[];
   tempTodo: Todo | null;
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   filter: FilterType;
   onDelete: (todoId: number) => void;
 }

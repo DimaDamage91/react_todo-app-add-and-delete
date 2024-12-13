@@ -65,7 +65,7 @@ export const App: React.FC = () => {
       });
   }
 
-  const addTodo = ({ title, userId, completed }: Todo) => {
+  const addTodo = ({ title, userId, completed }: Omit<Todo, 'id'>) => {
     if (!title.trim()) {
       setError('Title should not be empty');
       setIsErrorVisible(true);
