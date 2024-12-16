@@ -9,6 +9,7 @@ export const Header: React.FC<{ onAdd: (title: string) => void; isAdding: boolea
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
    onAdd(newTodoTitle.trim());
+
   };
 
   return (
