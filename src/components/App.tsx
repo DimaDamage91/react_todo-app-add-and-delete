@@ -14,11 +14,14 @@ import { Todo } from '../types/Todo';
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
+  const [newTodoTitle, setNewTodoTitle] = useState(''); // ++++
 
   const [error, setError] = useState<string | null>(null);
   const [isErrorVisible, setIsErrorVisible] = useState(true);
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [isAdding, setIsAdding] = useState(false);
+
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
 
   const handleError = (errorType: string) => {
@@ -54,6 +57,8 @@ export const App: React.FC = () => {
         setTodos((currentTodos) =>
           currentTodos.filter((todo) => todo.id !== todoId)
         );
+
+        inputRef.current?.focus();
       })
       .catch(() => {
         handleError('delete');
@@ -87,14 +92,17 @@ export const App: React.FC = () => {
       .then((newTodo) => {
         setTodos((currentTodos) => [...currentTodos, newTodo]);
         setTempTodo(null);
+        setNewTodoTitle('');   // ++++++
       })
       .catch(() => {
         handleError('add');
+        setTempTodo(null);
       })
       .finally(() => {
         setIsAdding(false);
+        inputRef.current?.focus();
       });
-  }
+  };
 
   const clearCompletedTodos = () => {
     const completedTodos = todos.filter((todo) => todo.completed);
@@ -124,6 +132,10 @@ export const App: React.FC = () => {
     loadTodos();
   }, []);
 
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [todos]);
+
   if (!USER_ID) {
     return <UserWarning />;
   }
@@ -133,7 +145,7 @@ export const App: React.FC = () => {
       <h1 className="todoapp__title">todos</h1>
 
       <div className="todoapp__content">
-        <Header onAdd={(title) => addTodo({ title, userId: USER_ID, completed: false })} isAdding={isAdding} />
+        <Header onAdd={(title) => addTodo({ title, userId: USER_ID, completed: false })} isAdding={isAdding} newTodoTitle={newTodoTitle} setNewTodoTitle={setNewTodoTitle} inputRef={inputRef}/>
         <TodoList todos={todos} tempTodo={tempTodo} setTodos={setTodos} filter={filter} onDelete={deleteTodo}/>
         {todos.length > 0 && (
           <Footer todos={todos} filter={filter} setFilter={setFilter} clearCompletedTodos={clearCompletedTodos}/>

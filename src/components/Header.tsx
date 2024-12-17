@@ -1,16 +1,27 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React from 'react';
 
-export const Header: React.FC<{ onAdd: (title: string) => void; isAdding: boolean; }> = ({ onAdd, isAdding }) => {
-  const [newTodoTitle, setNewTodoTitle] = useState('');
+interface HeaderProps {  //+++
+  onAdd: (title: string) => void;
+  isAdding: boolean;
+  newTodoTitle: string;
+  setNewTodoTitle: React.Dispatch<React.SetStateAction<string>>;
+  inputRef: React.RefObject<HTMLInputElement>;
+}
 
-  const inputRef = React.useRef<HTMLInputElement>(null);
+export const Header: React.FC<HeaderProps> = ({ onAdd, isAdding, newTodoTitle, setNewTodoTitle, inputRef }) => { //+++
 
-  const handleSubmit = (event: React.FormEvent) => {
+
+  const handleSubmit = (event: React.FormEvent) => { //+++
     event.preventDefault();
-   onAdd(newTodoTitle.trim());
-
+    onAdd(newTodoTitle.trim());
   };
+
+  React.useEffect(() => {
+    if (inputRef.current && !isAdding) {
+      inputRef.current.focus();
+    }
+  }, [isAdding]);
 
   return (
     <header className="todoapp__header">
@@ -26,7 +37,6 @@ export const Header: React.FC<{ onAdd: (title: string) => void; isAdding: boolea
           value={newTodoTitle}
           onChange={(e) => setNewTodoTitle(e.target.value)}
           disabled={isAdding}
-          autoFocus
         />
       </form>
     </header>

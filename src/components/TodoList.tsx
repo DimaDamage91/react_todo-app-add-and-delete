@@ -19,9 +19,7 @@ export const TodoList: React.FC<TodoListProps> = ({ todos, tempTodo, filter, onD
     return true;
   });
 
-  const todosToRender = tempTodo
-  ? [tempTodo, ...filteredTodos]
-  : filteredTodos;
+  const todosToRender = tempTodo ? [...filteredTodos, tempTodo] : filteredTodos;
 
   return (
     <section className="todoapp__main" data-cy="TodoList">
