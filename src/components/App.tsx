@@ -14,7 +14,7 @@ import { Todo } from '../types/Todo';
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
-  const [newTodoTitle, setNewTodoTitle] = useState(''); // ++++
+  const [newTodoTitle, setNewTodoTitle] = useState('');
 
   const [error, setError] = useState<string | null>(null);
   const [isErrorVisible, setIsErrorVisible] = useState(true);
@@ -77,7 +77,7 @@ export const App: React.FC = () => {
       return;
     }
 
-    const temporaryTodo = {
+    const temporaryTodo: Todo = {
       id: 0,
       title,
       userId,
@@ -92,7 +92,7 @@ export const App: React.FC = () => {
       .then((newTodo) => {
         setTodos((currentTodos) => [...currentTodos, newTodo]);
         setTempTodo(null);
-        setNewTodoTitle('');   // ++++++
+        setNewTodoTitle('');
       })
       .catch(() => {
         handleError('add');
@@ -108,15 +108,27 @@ export const App: React.FC = () => {
     const completedTodos = todos.filter((todo) => todo.completed);
 
     Promise.allSettled(
-      completedTodos.map((todo) =>
-        todoService.deleteTodo(todo.id).catch(() => {
-          handleError('delete');
-        })
-      )
-    ).then(() => {
-      setTodos((currentTodos) => currentTodos.filter((todo) => !todo.completed));
+      completedTodos.map((todo) => todoService.deleteTodo(todo.id))
+    ).then((results) => {
+
+      const failedIds = results
+        .map((result, index) =>
+          result.status === 'rejected' ? completedTodos[index].id : null
+        )
+        .filter((id): id is number => id !== null);
+
+      setTodos((currentTodos) =>
+        currentTodos.filter(
+          (todo) => !todo.completed || failedIds.includes(todo.id)
+        )
+      );
+
+      if (results.some((result) => result.status === 'rejected')) {
+        handleError('delete');
+      }
     });
-  }
+  };
+
 
   useEffect(() => {
     const loadTodos = async () => {
